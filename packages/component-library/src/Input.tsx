@@ -4,7 +4,6 @@ import React, {
   type KeyboardEvent,
   type FocusEvent,
   type MouseEvent,
-  useRef,
 } from 'react';
 import { Input as ReactAriaInput } from 'react-aria-components';
 
@@ -13,18 +12,6 @@ import { css, cx } from '@emotion/css';
 import { useResponsive } from './hooks/useResponsive';
 import { styles } from './styles';
 import { theme } from './theme';
-
-// We need to check if we're in a browser environment and Firefox specifically
-// This is a simple detection that works at component level
-const isFirefoxBrowser = (() => {
-  if (typeof navigator === 'undefined') return false;
-  try {
-    const userAgent = navigator.userAgent || '';
-    return userAgent.toLowerCase().includes('firefox');
-  } catch {
-    return false;
-  }
-})();
 
 export const baseInputStyle = {
   outline: 0,
@@ -72,58 +59,25 @@ export function Input({
   className,
   ...props
 }: InputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  // Firefox-specific click handler to fix cursor positioning issues
-  const handleClick = (e: MouseEvent<HTMLInputElement>) => {
-    if (isFirefoxBrowser) {
-      const input = e.currentTarget;
-      const rect = input.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      
-      // Use setTimeout to defer cursor positioning after React's event handling
-      setTimeout(() => {
-        if (input) {
-          const textWidth = input.scrollWidth;
-          const containerWidth = input.clientWidth;
-          
-          // Calculate approximate cursor position based on click location
-          const relativeX = Math.max(0, Math.min(x, containerWidth));
-          const textRatio = textWidth > 0 ? relativeX / containerWidth : 0;
-          const cursorPos = Math.round(textRatio * (input.value?.length || 0));
-          
-          try {
-            input.setSelectionRange(cursorPos, cursorPos);
-          } catch {
-            // Fallback: just focus the input
-            input.focus();
-          }
-        }
-      }, 0);
-    }
-    
-    // Call original onClick if provided
-    props.onClick?.(e);
-  };
-
   return (
     <ReactAriaInput
-      ref={(node) => {
-        // Handle both callback refs and ref objects
-        if (typeof ref === 'function') {
-          ref(node);
-        } else if (ref) {
-          ref.current = node;
-        }
-        inputRef.current = node;
-      }}
+      ref={ref}
       className={
         typeof className === 'function'
           ? renderProps => cx(defaultInputClassName, className(renderProps))
           : cx(defaultInputClassName, className)
       }
+      // Explicitly preserve native input behavior for cursor positioning
+      // by ensuring our event handlers don't prevent default behavior
+      onPointerDown={e => {
+        // Don't preventDefault() - let native cursor positioning work
+        props.onPointerDown?.(e);
+      }}
+      onClick={e => {
+        // Don't preventDefault() - let native cursor positioning work
+        props.onClick?.(e);
+      }}
       {...props}
-      onClick={handleClick}
       onKeyUp={e => {
         props.onKeyUp?.(e);
 

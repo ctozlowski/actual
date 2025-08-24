@@ -18,4 +18,3 @@ export const isBrowser = true;
 
 const agent = UAParser(navigator.userAgent);
 export const isIOSAgent = agent.browser.name === 'Mobile Safari';
-export const isFirefox = agent.browser.name === 'Firefox';
