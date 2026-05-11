@@ -633,6 +633,8 @@ export function useSyncAccountsMutation() {
         accountIdsToSync = accountIdsToSync.filter(
           id => !simpleFinAccounts.find(sfa => sfa.id === id),
         );
+
+        dispatch(setAccountsSyncing({ ids: accountIdsToSync }));
       }
 
       // Loop through the accounts and perform sync operation.. one by one
