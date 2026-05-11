@@ -209,6 +209,7 @@ __metadata:
     supertest: "npm:^7.2.2"
     typescript-strict-plugin: "npm:^2.4.4"
     uuid: "npm:^14.0.0"
+    vite: "npm:^8.0.5"
     vitest: "npm:^4.1.2"
     winston: "npm:^3.19.0"
   bin:

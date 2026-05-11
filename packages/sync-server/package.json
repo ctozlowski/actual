@@ -74,20 +74,18 @@
     }
   },
   "scripts": {
-    "start": "yarn build && node build/app",
-    "start-monitor": "nodemon --exec 'yarn build && node build/app' --ignore './build/**/*' --ext 'ts,js' build/app",
-    "build": "tsgo -b && yarn add-import-extensions && yarn copy-static-assets",
+    "start": "yarn build && node build/app.js",
+    "start-monitor": "nodemon --exec 'yarn build && node build/app.js' --ignore './build/**/*' --ext 'ts,js' build/app.js",
+    "build": "vite build",
     "typecheck": "tsgo -b && tsc-strict",
-    "add-import-extensions": "node bin/add-import-extensions.mjs",
-    "copy-static-assets": "rm -rf build/src/sql && cp -r src/sql build/src/sql",
-    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --import ./register-loader.mjs --trace-warnings' vitest --run",
-    "db:migrate": "yarn build && cross-env NODE_ENV=development node build/src/scripts/run-migrations.js up",
-    "db:downgrade": "yarn build && cross-env NODE_ENV=development node build/src/scripts/run-migrations.js down",
-    "db:test-migrate": "yarn build && cross-env NODE_ENV=test node build/src/scripts/run-migrations.js up",
-    "db:test-downgrade": "yarn build && cross-env NODE_ENV=test node build/src/scripts/run-migrations.js down",
-    "reset-password": "yarn build && node build/src/scripts/reset-password.js",
-    "disable-openid": "yarn build && node build/src/scripts/disable-openid.js",
-    "health-check": "yarn build && node build/src/scripts/health-check.js"
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --trace-warnings' vitest --run",
+    "db:migrate": "yarn build && cross-env NODE_ENV=development node build/scripts/run-migrations.js up",
+    "db:downgrade": "yarn build && cross-env NODE_ENV=development node build/scripts/run-migrations.js down",
+    "db:test-migrate": "yarn build && cross-env NODE_ENV=test node build/scripts/run-migrations.js up",
+    "db:test-downgrade": "yarn build && cross-env NODE_ENV=test node build/scripts/run-migrations.js down",
+    "reset-password": "yarn build && node build/scripts/reset-password.js",
+    "disable-openid": "yarn build && node build/scripts/disable-openid.js",
+    "health-check": "yarn build && node build/scripts/health-check.js"
   },
   "dependencies": {
     "@actual-app/crdt": "workspace:*",
@@ -124,6 +122,7 @@
     "nodemon": "^3.1.14",
     "supertest": "^7.2.2",
     "typescript-strict-plugin": "^2.4.4",
+    "vite": "^8.0.5",
     "vitest": "^4.1.2"
   },
   "engines": {
